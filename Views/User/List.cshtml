@@ -1,0 +1,66 @@
+﻿<!–Referencia del modelo de usuario –>
+@model List<MvcApplication10.USERS>
+@{
+    ViewBag.Title = "List of users";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var grid = new WebGrid(source: Model, canPage: true, rowsPerPage: 10);
+    grid.Pager(WebGridPagerModes.All);
+}
+
+<h2>List of Users</h2>
+
+<style type="text/css">
+    /*Here we will add css for style webgrid*/
+    .webgrid-table {
+        font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+        font-size: 1.2em;
+        width: 100%;
+        display: table;
+        border-collapse: separate;
+        border: solid 1px #98BF21;
+        background-color: white;
+    }
+
+        .webgrid-table td, th {
+            border: 1px solid #98BF21;
+            padding: 3px 7px 2px;
+        }
+
+    .webgrid-header {
+        background-color: #A7C942;
+        color: #FFFFFF;
+        padding-bottom: 4px;
+        padding-top: 5px;
+        text-align: left;
+    }
+
+    .webgrid-footer {
+    }
+
+    .webgrid-row-style {
+        padding: 3px 7px 2px;
+    }
+
+    .webgrid-alternating-row {
+        background-color: #EAF2D3;
+        padding: 3px 7px 2px;
+    }
+</style>
+
+<div id="content">
+    @grid.GetHtml(
+    tableStyle: "webgrid-table",
+    headerStyle: "webgrid-header",
+    footerStyle: "webgrid-footer",
+    alternatingRowStyle: "webgrid-alternating-row",
+    rowStyle: "webgrid-row-style",
+    columns: grid.Columns(
+        //here i will add column for serial no
+        //grid.Column(header: "Serial No", format: @<text><div>@(item.WebGrid.Rows.IndexOf(item) + 1)</div></text>),
+        grid.Column(columnName:"NAME",header:"Name"),
+        grid.Column(columnName: "BIRTHDAY", header: "Birth of Day"),
+        grid.Column(columnName:"COUNTRY", header:"Country"),
+        grid.Column(header:"EMAIL", format:@<text><a href="mailto:@item.EMAIL">@item.EMAIL</a></text>)//,
+        //grid.Column(header:"Is Active?", format:@<text><input type="checkbox" checked="@item.isActive" disabled="disabled" /></text>)
+    ))
+</div>
