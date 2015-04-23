@@ -21,5 +21,7 @@ namespace MvcApplication10
         public Nullable<System.DateTime> BIRTHDAY { get; set; }
         public string COUNTRY { get; set; }
         public string AVATAR { get; set; }
+    
+        public virtual REGISTER REGISTER { get; set; }
     }
 }

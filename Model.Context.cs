@@ -25,8 +25,7 @@ namespace MvcApplication10
             throw new UnintentionalCodeFirstException();
         }
     
-        public DbSet<REGISTER> REGISTER { get; set; }
         public DbSet<USERS> USERS { get; set; }
-        public DbSet<USERS_REGISTER> USERS_REGISTER { get; set; }
+        public DbSet<REGISTER> REGISTER { get; set; }
     }
 }

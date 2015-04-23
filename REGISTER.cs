@@ -14,9 +14,11 @@ namespace MvcApplication10
     
     public partial class REGISTER
     {
-        public int ID { get; set; }
-        public int ID_USER { get; set; }
+        public int IDUSER { get; set; }
         public System.DateTime DLOGIN { get; set; }
         public bool CONNECT { get; set; }
+        public int COUNT { get; set; }
+    
+        public virtual USERS USERS { get; set; }
     }
 }

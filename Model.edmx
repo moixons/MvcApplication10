@@ -7,12 +7,12 @@
     <Schema Namespace="TestingModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="REGISTER">
           <Key>
-            <PropertyRef Name="ID" />
+            <PropertyRef Name="IDUSER" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" />
-          <Property Name="ID_USER" Type="int" Nullable="false" />
+          <Property Name="IDUSER" Type="int" Nullable="false" />
           <Property Name="DLOGIN" Type="datetime" Nullable="false" />
           <Property Name="CONNECT" Type="bit" Nullable="false" />
+          <Property Name="COUNT" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="USERS">
           <Key>
@@ -26,33 +26,14 @@
           <Property Name="COUNTRY" Type="nvarchar" MaxLength="50" />
           <Property Name="AVATAR" Type="nvarchar" MaxLength="50" />
         </EntityType>
-        <EntityType Name="USERS_REGISTER">
-          <Key>
-            <PropertyRef Name="ID_USER" />
-            <PropertyRef Name="ID_REGISTER" />
-          </Key>
-          <Property Name="ID_USER" Type="int" Nullable="false" />
-          <Property Name="ID_REGISTER" Type="int" Nullable="false" />
-          <Property Name="COUNT" Type="int" Nullable="false" />
-        </EntityType>
         <EntityContainer Name="TestingModelStoreContainer">
           <EntitySet Name="REGISTER" EntityType="Self.REGISTER" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="USERS" EntityType="Self.USERS" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="USERS_REGISTER" EntityType="Self.USERS_REGISTER" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="TestingModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="REGISTER">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" />
-          <Property Name="ID_USER" Type="Int32" Nullable="false" />
-          <Property Name="DLOGIN" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CONNECT" Type="Boolean" Nullable="false" />
-        </EntityType>
         <EntityType Name="USERS">
           <Key>
             <PropertyRef Name="ID" />
@@ -64,37 +45,44 @@
           <Property Name="BIRTHDAY" Type="DateTime" Precision="0" Nullable="true" />
           <Property Name="COUNTRY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="true" />
           <Property Name="AVATAR" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="true" />
-        </EntityType>
-        <EntityType Name="USERS_REGISTER">
-          <Key>
-            <PropertyRef Name="ID_USER" />
-            <PropertyRef Name="ID_REGISTER" />
-          </Key>
-          <Property Name="ID_USER" Type="Int32" Nullable="false" />
-          <Property Name="ID_REGISTER" Type="Int32" Nullable="false" />
-          <Property Name="COUNT" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="REGISTER" Relationship="TestingModel.USERSREGISTER" FromRole="USERS" ToRole="REGISTER" />
         </EntityType>
         <EntityContainer Name="TestingEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="REGISTER" EntityType="Self.REGISTER" />
           <EntitySet Name="USERS" EntityType="Self.USERS" />
-          <EntitySet Name="USERS_REGISTER" EntityType="Self.USERS_REGISTER" />
+          <EntitySet Name="REGISTER" EntityType="TestingModel.REGISTER" />
+          <AssociationSet Name="USERSREGISTER" Association="TestingModel.USERSREGISTER">
+            <End Role="USERS" EntitySet="USERS" />
+            <End Role="REGISTER" EntitySet="REGISTER" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="REGISTER">
+          <Key>
+            <PropertyRef Name="IDUSER" />
+          </Key>
+          <Property Name="IDUSER" Type="Int32" Nullable="false" />
+          <Property Name="DLOGIN" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CONNECT" Type="Boolean" Nullable="false" />
+          <Property Name="COUNT" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="USERS" Relationship="TestingModel.USERSREGISTER" FromRole="REGISTER" ToRole="USERS" />
+        </EntityType>
+        <Association Name="USERSREGISTER">
+          <End Type="TestingModel.USERS" Role="USERS" Multiplicity="1" />
+          <End Type="TestingModel.REGISTER" Role="REGISTER" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="USERS">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="REGISTER">
+              <PropertyRef Name="IDUSER" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="TestingModelStoreContainer" CdmEntityContainer="TestingEntities">
-          <EntitySetMapping Name="REGISTER">
-            <EntityTypeMapping TypeName="TestingModel.REGISTER">
-              <MappingFragment StoreEntitySet="REGISTER">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="ID_USER" ColumnName="ID_USER" />
-                <ScalarProperty Name="DLOGIN" ColumnName="DLOGIN" />
-                <ScalarProperty Name="CONNECT" ColumnName="CONNECT" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="USERS">
             <EntityTypeMapping TypeName="TestingModel.USERS">
               <MappingFragment StoreEntitySet="USERS">
@@ -108,12 +96,13 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="USERS_REGISTER">
-            <EntityTypeMapping TypeName="TestingModel.USERS_REGISTER">
-              <MappingFragment StoreEntitySet="USERS_REGISTER">
-                <ScalarProperty Name="ID_USER" ColumnName="ID_USER" />
-                <ScalarProperty Name="ID_REGISTER" ColumnName="ID_REGISTER" />
+          <EntitySetMapping Name="REGISTER">
+            <EntityTypeMapping TypeName="TestingModel.REGISTER">
+              <MappingFragment StoreEntitySet="REGISTER">
                 <ScalarProperty Name="COUNT" ColumnName="COUNT" />
+                <ScalarProperty Name="CONNECT" ColumnName="CONNECT" />
+                <ScalarProperty Name="DLOGIN" ColumnName="DLOGIN" />
+                <ScalarProperty Name="IDUSER" ColumnName="IDUSER" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

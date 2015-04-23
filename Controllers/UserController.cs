@@ -58,9 +58,12 @@ namespace MvcApplication10.Controllers
                     sysUser.AVATAR = null;
 
                     db.USERS.Add(sysUser);
+                    db.SaveChanges();
                     int lastId = db.USERS.Max(item => item.ID);
                     InsertLogin(lastId);
-                    return RedirectToAction("List", "User");
+                    FormsAuthentication.SetAuthCookie(user.Email, false);
+
+                    return RedirectToAction("List", "User");                    
                 }
             }
             else
@@ -93,14 +96,25 @@ namespace MvcApplication10.Controllers
 
         private void InsertLogin(int idUser)
         {
-            var db = new TestingEntities();
-            //var user = db.USERS.LastOrDefault;
-            var register = db.REGISTER.Create();
-            register.CONNECT = true;
-            register.DLOGIN = DateTime.Now;
-            register.ID_USER = idUser;
-            db.REGISTER.Add(register);
-            //db.SaveChanges();
+            using (var db = new TestingEntities())
+            {
+                var register = db.REGISTER.FirstOrDefault(u => u.IDUSER == idUser);
+                if (register != null)
+                {
+                    register.DLOGIN = DateTime.Now;
+                    register.CONNECT = true;
+                    register.COUNT = (register.COUNT + 1);
+                } 
+                else 
+                {
+                    var registerNew = db.REGISTER.Create();
+                    registerNew.CONNECT = true;
+                    registerNew.DLOGIN = DateTime.Now;
+                    registerNew.IDUSER = idUser;
+                    db.REGISTER.Add(registerNew);                    
+                }
+                db.SaveChanges();               
+            }
         }
 
         public ActionResult List()
@@ -111,6 +125,13 @@ namespace MvcApplication10.Controllers
                 users = dc.USERS.ToList();
             }
             return View(users);
+            /*
+            using (TestingEntities dc = new TestingEntities())
+            {
+                var users = dc.USERS.Join(dc.REGISTER, u => u.ID, r => r.IDUSER, (u, r) => new { USERS = u, REGISTER = r }).ToList();
+                return View(users);
+            }
+            */
         }
     }
 }
