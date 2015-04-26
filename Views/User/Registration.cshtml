@@ -1,5 +1,5 @@
 ﻿<!–Referencia del modelo de usuario –>
-@model MvcApplication10.Models.UserModel
+@model SharedModels.Models.UserModel
 @{
     ViewBag.Title = "Register";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -38,12 +38,12 @@
 
             <div>@Html.LabelFor(u => u.Country) </div>
             <div>
-                @Html.TextBoxFor(u => u.Country)
+                @Html.DropDownListFor(u => u.Country, Helpers.SelectListItemHelper.GetCountryList())
                 @Html.ValidationMessageFor(u => u.Country)
-            </div>           
+            </div> 
 
             <input type="submit" value="Create user" />
-        </fieldset>
+</fieldset>
     </div>
 }
 

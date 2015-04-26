@@ -1,5 +1,5 @@
 ﻿<!–Referencia del modelo de usuario –>
-@model List<MvcApplication10.USERS>
+@model List<SharedModels.Models.ListUsers>
 @{
     ViewBag.Title = "List of users";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -57,10 +57,14 @@
     columns: grid.Columns(
         //here i will add column for serial no
         //grid.Column(header: "Serial No", format: @<text><div>@(item.WebGrid.Rows.IndexOf(item) + 1)</div></text>),
-        grid.Column(columnName:"NAME",header:"Name"),
-        grid.Column(columnName: "BIRTHDAY", header: "Birth of Day"),
+        grid.Column(columnName: "Name", header: "Name"),
+        grid.Column(columnName: "Country", header: "Birth of Day"),
         grid.Column(columnName:"COUNTRY", header:"Country"),
-        grid.Column(header:"EMAIL", format:@<text><a href="mailto:@item.EMAIL">@item.EMAIL</a></text>)//,
-        //grid.Column(header:"Is Active?", format:@<text><input type="checkbox" checked="@item.isActive" disabled="disabled" /></text>)
+        grid.Column(columnName: "Dlogin", header: "Date Last Login"),
+        grid.Column(columnName: "IP", header: "IP"),
+        grid.Column(columnName: "TotalLogins", header: "Number of Logins"),
+        grid.Column(columnName:"Online", header:"Is Active?", format:@<text><input type="checkbox" checked="@item.Online" disabled="disabled" /></text>)//,
+        //grid.Column(header:"EMAIL", format:@<text><a href="mailto:@item.EMAIL">@item.EMAIL</a></text>)//,
+        
     ))
 </div>
